@@ -40,6 +40,7 @@ void IntArray::add(int i) {
     for (size_t i = 0; i < size(); ++i) {
         tmp[i] = get(i);
     }
+    tmp[size()] = i;
     delete[] a;
     a = tmp;
     ++k;
@@ -60,10 +61,8 @@ int main()
             return 1;
         }
         size_t count = 1;
-
         for (size_t i = 0; i < a.size() - 1; ++i) {
             int d = a.get(i);
-            // std::cout << d;
             count += !(d % a.last());
         }
         std::cout << count << "\n";

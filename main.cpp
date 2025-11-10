@@ -1,72 +1,74 @@
 #include <iostream>
 
 struct IntArray {
-  void add (int i);
-  int get (size_t id) const noexcept;
-  size_t size() const noexcept;
-  int last() const noexcept;
-  IntArray(int i);
-  ~IntArray();
+    int* a;
+    size_t k;
+    void add(int i);
+    int get(size_t id) const noexcept;
+    size_t size() const noexcept;
+    int last() const noexcept;
+    IntArray(int i);
+    ~IntArray();
 };
 
-IntArray::~Intarray() {
-  delete[] a;
+IntArray::~IntArray() {
+    delete[] a;
 }
 
-IntArray::IntArray(int i):
-  a (new int [1]),
-  k(1)
+IntArray::IntArray(int i) :
+    a(new int[1]),
+    k(1)
 
 {
-  *a = i;
+    *a = i;
 }
 
-IntArray::get (size_t id) const noexcept {
-  return a[id];
+int IntArray::get(size_t id) const noexcept {
+    return a[id];
 }
 
 size_t IntArray::size() const noexcept {
-  return k;
-} 
+    return k;
+}
 
 int IntArray::last() const noexcept {
-  return get(size()-1);
+    return get(size() - 1);
 }
 
-void IntArray::add (int i) {
-  int * tmp  = new int[size() + 1];
-  for (size_t i = 0; i < size(); ++1) {
-    tmp[i] = get(i);
-  }
-  delete[] a;
-  a=tmp;
-  ++k;
+void IntArray::add(int i) {
+    int* tmp = new int[size() + 1];
+    for (size_t i = 0; i < size(); ++i) {
+        tmp[i] = get(i);
+    }
+    delete[] a;
+    a = tmp;
+    ++k;
 }
 
-int main() 
+int main()
 {
-  int next = 0;
-  std::cin >> next;
+    int next = 0;
+    std::cin >> next;
 
-  try {
-  IntArray a(next);    //вызов конструктора по умолчанию
-  //a.add(next);   //add
-  while (std::cin >> next) {
-    a.add(next);
-  }
-  if (std::cin.fail()) {
-    return 1;
-  }
-  size_t count = 1;
+    try {
+        IntArray a(next);    //вызов конструктора по умолчанию
+        //a.add(next);   //add
+        while (std::cin >> next) {
+            a.add(next);
+        }
+        if (std::cin.fail()) {
+            return 1;
+        }
+        size_t count = 1;
 
-  for (size_t i = 0; i < a.size()-1; ++i) {
-    int d = a.get(i);
-    count += !(d % a.last());
-  }
-  std::cout << count << "\n";
-  return 0;
-  }
-  catch (const std::bad_alloc()) {
-  return 2;
-  }
+        for (size_t i = 0; i < a.size() - 1; ++i) {
+            int d = a.get(i);
+            count += !(d % a.last());
+        }
+        std::cout << count << "\n";
+        return 0;
+    }
+    catch (const std::bad_alloc()) {
+        return 2;
+    }
 }

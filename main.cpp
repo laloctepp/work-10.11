@@ -5,15 +5,18 @@ struct IntArray {
   int get (size_t id) const;
   size_t size() const;
   int last() const;
-}
+  IntArray(int i);
+  ~IntArray();
+};
 
 int main() 
 {
   int next = 0;
   std::cin >> next;
 
-  IntArray a;    //вызов конструктора по умолчанию
-  a.add(next);
+  try {
+  IntArray a(next);    //вызов конструктора по умолчанию
+  //a.add(next);   //add
   while (std::cin >> next) {
     a.add(next);
   }
@@ -27,4 +30,9 @@ int main()
     count += !(d % a.last());
   }
   std::cout << count << "\n";
+  return 0;
+  }
+  catch (const std::bad_alloc()) {
+  return 2;
+  }
 }

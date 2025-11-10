@@ -9,6 +9,10 @@ struct IntArray {
   ~IntArray();
 };
 
+IntArray::~Intarray() {
+  delete[] a;
+}
+
 int main() 
 {
   int next = 0;

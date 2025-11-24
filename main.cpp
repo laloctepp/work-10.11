@@ -241,8 +241,6 @@ void IntMatrix::command2 (std::istream& in) {
 void IntMatrix::command3(std::istream& in) {
   size_t rowNum = 0;
   size_t colNum = 0;
-  int** tmp = nullptr;
-  
   in >> rowNum >> colNum;
   if (in.fail() && !in.eof()) {
     throw std::invalid_argument("Wrong parametr");
@@ -250,52 +248,29 @@ void IntMatrix::command3(std::istream& in) {
   if (rowNum > rows || colNum > cols) {
     throw std::out_of_range("Wrong argument");
   }
-  size_t ii = 0;
+  IntArray* new_matrix = nullptr;
   try {
-    tmp = new int*[rows + 1];
-    for (; ii < rows + 1; ++ii) {
-      tmp[ii] = new int[cols + 1];
+    new_matrix = new IntArray[rows + 1];
+    for (size_t i = 0; i < rows + 1; ++i) {
+      for (size_t j = 0; j < cols + 1; ++j) {
+        new_matrix[i].add(0);
+      }
     }
-    
     for (size_t i = 0; i < rows; ++i) {
       for (size_t j = 0; j < cols; ++j) {
-        if (j < colNum) {
-          tmp[i][j] = matrix[i].get(j);
-        } else {
-          tmp[i][j + 1] = matrix[i].get(j);
-        }
+        size_t new_i = (i < rowNum) ? i : i + 1;
+        size_t new_j = (j < colNum) ? j : j + 1;
+        new_matrix[new_i].a[new_j] = matrix[i].get(j);
       }
-      tmp[i][colNum] = 0;  
-    }
-    for (size_t j = 0; j < cols + 1; ++j) {
-      tmp[rows][j] = 0;
-    }
-    if (rowNum < rows) {
-      for (size_t i = rows; i > rowNum; --i) {
-        for (size_t j = 0; j < cols + 1; ++j) {
-          tmp[i][j] = tmp[i - 1][j];
-        }
-      }
-    }
-    for (size_t j = 0; j < cols + 1; ++j) {
-      tmp[rowNum][j] = 0;
-    }
-    for (size_t i = 0; i < rows; ++i) {
-      delete[] matrix[i].a;
     }
     delete[] matrix;
-    
-    matrix = new IntArray[rows + 1];
-    for (size_t i = 0; i < rows + 1; ++i) {
-      matrix[i].a = tmp[i];
-      matrix[i].size = cols + 1;
-    }
-    delete[] tmp;
+    matrix = new_matrix;
     rows++;
     cols++;
-  } catch (std::bad_alloc&) {
-    remove(tmp, ii);
-    throw std::runtime_error("Not enough memory");
+  }
+  catch (const std::bad_alloc& e) {
+    delete[] new_matrix;
+    throw std::bad_alloc();
   }
 }
 

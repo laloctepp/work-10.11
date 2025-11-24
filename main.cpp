@@ -181,10 +181,16 @@ IntArray & IntArray::operator=(IntArray && rhs)
 }
 
 IntMatrix::IntMatrix(size_t rows, size_t cols) :
-  matrix(new IntArray[rows]),
-  rows(rows),
-  cols(cols)
-  {}
+   matrix(new IntArray[rows]),  
+   rows(rows),
+   cols(cols)
+{
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            matrix[i].add(0);
+        }
+    }
+}
 
 IntMatrix::~IntMatrix() {
   delete[] matrix;

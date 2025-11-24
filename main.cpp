@@ -11,7 +11,7 @@ struct IntArray {
   size_t size;
   int at(size_t id()) const;
   IntArray(const IntArray & rhs); //конструктор копирования
-  IntArray & operator=(const IntArray & rhs); //оператор копирующего присваивания 
+  IntArray & operator=(const IntArray & rhs); //оператор копирующего присваивания
   IntArray (IntArray && rhs);
   IntArray & operator=(IntArray && rhs);
 };
@@ -96,7 +96,6 @@ int main()
 {
   int next = 0;
   std::cin >> next;
-
   try {
     IntArray a(next);    //вызов конструктора по умолчанию
     while (std::cin >> next) {
@@ -106,7 +105,6 @@ int main()
       return 1;
     }
     size_t count = 1;
-
     for (size_t i = 0; i < a.getSize() - 1; ++i) {
       int d = a.get(i);
       count += !(d % a.last());

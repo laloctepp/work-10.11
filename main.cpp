@@ -63,36 +63,36 @@ int main(int argc, char * argv[])
       std::cerr << "Wrong input";
       return 1;
     }
-  }
-  try {
-    if (param == 2) {
-      matrix.command2(std::cin); 
-    }
-    else if (param == 3) {
-      matrix.command3(std::cin);
-    }
-    else {
-      std::cerr << "Wrong parametr";
-      return 3;
-    }
-    for (size_t i = 0; i < rows; ++i) {
-      for (size_t j = 0; j < cols; ++j) {
-        std::cout << matrix.matrix[i].a[j] << " ";
+    try {
+      if (param == 2) {
+        matrix.command2(std::cin); 
       }
-      std::cout << "\n";
+      else if (param == 3) {
+        matrix.command3(std::cin);
+      }
+      else {
+        std::cerr << "Wrong parametr";
+        return 3;
+      }
+      for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+          std::cout << matrix.matrix[i].a[j] << " ";
+        }
+        std::cout << "\n";
+      }
     }
-  }
-  catch (const std::invalid_argument& e) {
-  std::cerr << e.what() << std::endl;
-  return 3;
-  }
-  catch (const std::bad_alloc& e) {
-  std::cerr << e.what() << std::endl;
-  return 2;
-  }
-  catch (const std::out_of_range& e) {
-  std::cerr << e.what() << std::endl;
-  return 3;
+    catch (const std::invalid_argument& e) {
+    std::cerr << e.what() << std::endl;
+    return 3;
+    }
+    catch (const std::bad_alloc& e) {
+    std::cerr << e.what() << std::endl;
+    return 2;
+    }
+    catch (const std::out_of_range& e) {
+    std::cerr << e.what() << std::endl;
+    return 3;
+    }
   }
 }
 
@@ -273,4 +273,3 @@ void IntMatrix::command3(std::istream& in) {
     throw std::bad_alloc();
   }
 }
-

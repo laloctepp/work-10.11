@@ -31,7 +31,7 @@ struct IntMatrix {
 int main(int argc, char * argv[])
 {
   if (argc != 2) {
-    std::cerr << "Wrong number of arguments";
+    std::cerr << "Wrong number of arguments" << "\n";
     return 1;
   }
   std::ifstream input(argv[1]);
@@ -39,11 +39,11 @@ int main(int argc, char * argv[])
   size_t rows = 0;
   input >> rows >> cols;
   if (input.fail() && !input.eof()) {
-    std::cerr << "Wrong input";
+    std::cerr << "Wrong input" << "\n";
     return 1;
   }
-  if (cols == 0 || rows == 0) {
-    std::cerr << "Wrong matrix characteristics";
+  if (cols <= 0 || rows <= 0) {
+    std::cerr << "Wrong matrix characteristics" << "\n";
     return 1;
   }
   IntMatrix matrix(rows, cols);
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
     for (size_t j = 0; j < cols; ++j) {
       input >> matrix.matrix[i].a[j];
       if (input.fail() && !input.eof()) {
-        std::cerr << "Wrong input";
+        std::cerr << "Wrong input" << "\n";
         return 1;
       }
     }
@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
   size_t param = 0;
   while (std::cin >> param) {
     if (std::cin.fail() && !std::cin.eof()) {
-      std::cerr << "Wrong input";
+      std::cerr << "Wrong input" << "\n";
       return 1;
     }
     try {
@@ -71,7 +71,7 @@ int main(int argc, char * argv[])
         matrix.command3(std::cin);
       }
       else {
-        std::cerr << "Wrong parametr";
+        std::cerr << "Wrong parametr" << "\n";
         return 3;
       }
       for (size_t i = 0; i < matrix.rows; ++i) {
@@ -82,15 +82,15 @@ int main(int argc, char * argv[])
       }
     }
     catch (const std::invalid_argument& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << "\n";
     return 3;
     }
     catch (const std::bad_alloc& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << "\n";
     return 2;
     }
     catch (const std::out_of_range& e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << e.what() << "\n";
     return 3;
     }
   }
@@ -212,7 +212,7 @@ void IntMatrix::command2(std::istream& in) {
     throw std::invalid_argument("Wrong parametr");
   }
   if (colNum > cols) {
-    throw std::out_of_range("Wrong argument");
+    throw std::out_of_range("Wrong parametr");
   }
   IntArray* new_matrix = nullptr;
   try {
@@ -249,7 +249,7 @@ void IntMatrix::command3(std::istream& in) {
     throw std::invalid_argument("Wrong parametr");
   }
   if (rowNum > rows || colNum > cols) {
-    throw std::out_of_range("Wrong argument");
+    throw std::out_of_range("Wrong parametr");
   }
   IntArray* new_matrix = nullptr;
   try {

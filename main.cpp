@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 struct IntArray {
   void add(int i);
@@ -27,29 +28,72 @@ struct IntMatrix {
   void command3(std::istream& in);
 };
 
-int main()
+int main(int argc, char * argv[])
 {
-  int next = 0;
-  std::cin >> next;
-  try {
-    IntArray a(next);    //вызов конструктора по умолчанию
-    while (std::cin >> next) {
-      a.add(next);
+  if (argc != 2) {
+    std::cerr << "Wrong number of arguments";
+    return 1;
+  }
+  std::ifstream input(argv[1]);
+  size_t cols = 0;
+  size_t rows = 0;
+  input >> rows >> cols;
+  if (input.fail() && !input.eof()) {
+    std::cerr << "Wrong input";
+    return 1;
+  }
+  if (cols == 0 || rows == 0) {
+    std::cerr << "Wrong matrix characteristics";
+    return 1;
+  }
+  IntMatrix matrix(rows, cols);
+  for (size_t i = 0; i < rows; ++i) {
+    for (size_t j = 0; j < cols; ++j) {
+      input >> matrix.matrix[i].a[j];
+      if (input.fail() && !input.eof()) {
+        std::cerr << "Wrong input";
+        return 1;
+      }
     }
-    if (std::cin.fail() && !(std::cin.eof())) {
+  }
+  input.close();
+  size_t param = 0;
+  while (std::cin >> param) {
+    if (std::cin.fail() && !std::cin.eof()) {
+      std::cerr << "Wrong input";
       return 1;
     }
-    size_t count = 1;
-    for (size_t i = 0; i < a.getSize() - 1; ++i) {
-      int d = a.get(i);
-      count += !(d % a.last());
+  }
+  try {
+    if (param == 2) {
+      matrix.command2(std::cin); 
     }
-    std::cout << count << "\n";
+    else if (param == 3) {
+      matrix.command3(std::cin);
+    }
+    else {
+      std::cerr << "Wrong parametr";
+      return 3;
+    }
+    for (size_t i = 0; i < rows; ++i) {
+      for (size_t j = 0; j < cols; ++j) {
+        std::cout << matrix.matrix[i].a[j] << " ";
+      }
+      std::cout << "\n";
+    }
   }
-  catch (const std::bad_alloc()) {
-    return 2;
+  catch (const std::invalid_argument& e) {
+  std::cerr << e.what() << std::endl;
+  return 3;
   }
-  return 0;
+  catch (const std::bad_alloc& e) {
+  std::cerr << e.what() << std::endl;
+  return 2;
+  }
+  catch (const std::out_of_range& e) {
+  std::cerr << e.what() << std::endl;
+  return 3;
+  }
 }
 
 IntArray::~IntArray() {
@@ -160,10 +204,10 @@ void IntMatrix::command2 (std::istream& in) {
   int ** tmp = nullptr;
   in >> colNum >> elem;
   if (in.fail() && !in.eof()) {
-    throw std::invalid_argument("Wrong input");
+    throw std::invalid_argument("Wrong parametr");
   }
   if (colNum > cols) {
-    throw std::invalid_argument("Wrong column");
+    throw std::out_of_range("Wrong argument");
   }
   size_t ii = 0;
   try {
@@ -201,10 +245,10 @@ void IntMatrix::command3(std::istream& in) {
   
   in >> rowNum >> colNum;
   if (in.fail() && !in.eof()) {
-    throw std::invalid_argument("Wrong input");
+    throw std::invalid_argument("Wrong parametr");
   }
   if (rowNum > rows || colNum > cols) {
-    throw std::invalid_argument("Wrong row or column");
+    throw std::out_of_range("Wrong argument");
   }
   size_t ii = 0;
   try {

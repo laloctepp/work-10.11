@@ -141,3 +141,7 @@ IntMatrix::IntMatrix(size_t rows, size_t cols) :
   rows(rows),
   cols(cols)
   {}
+
+IntMatrix::~IntMatrix() {
+  delete[] matrix;
+}

@@ -23,8 +23,12 @@ struct IntMatrix {
   size_t cols;
   IntMatrix(size_t rows, size_t cols);
   ~IntMatrix();
-  void command2();
-  void command3();
+  // IntMatrix(const IntMatrix & rhs); //конструктор копирования
+  // IntMatrix & operator=(const IntMatrix & rhs); //оператор копирующего присваивания
+  // IntMatrix (IntMatrix && rhs);
+  // IntMatrix & operator=(IntMatrix && rhs);
+  void command2(std::istream& in);
+  void command3(std::istream& in);
 };
 
 int main()
@@ -145,3 +149,56 @@ IntMatrix::IntMatrix(size_t rows, size_t cols) :
 IntMatrix::~IntMatrix() {
   delete[] matrix;
 }
+
+//создать матрицу в которой на rows элементов больше чем в исходной матрице
+//перенести туда все элементы пропустив нужный столбец
+//в тот столбец занести необходимые элементы
+
+void remove (int ** m, size_t rows)
+{
+	for (size_t i=0; i < rows; ++i) {
+		delete[] m[i];
+	}
+	delete[] m;
+}
+
+void IntMatrix::command2 (std::istream& in) {
+  size_t colNum = 0;
+  int elem = 0;
+  int ** tmp = nullptr;
+  in >> colNum >> elem;
+  if (in.fail() && !in.eof()) {
+    throw std::invalid_argument("Wrong input");
+  }
+  if (colNum > cols) {
+    throw std::invalid_argument("Wrong column");
+  }
+  try {
+    size_t ii = 0;
+    tmp = new int * [rows];
+    for (; ii < rows; ++ii) {
+      tmp[ii] = new int[cols + 1];
+    }
+    for (size_t i = 0; i < rows; ++i) {
+      for (size_t j = 0; j < colNum; ++j) {
+        tmp[i][j] = matrix[i].get(j);
+      }
+      tmp[i][colNum] = elem;
+      for (size_t j = colNum; j < cols; ++j) {
+        tmp[i][j+1] = matrix[i].get(j);
+      }
+    }
+    for (size_t i = 0; i < rows; ++i) {
+        delete[] matrix[i].a;       
+        matrix[i].a = tmp[i];        
+        matrix[i].k = cols + 1;
+    }
+    delete[] tmp;
+    ++cols;
+  }
+  catch (std::bad_alloc&) {
+    remove (tmp, ii);
+    throw std::runtime_error("Not enough memory");
+  }
+}
+

@@ -23,10 +23,6 @@ struct IntMatrix {
   size_t cols;
   IntMatrix(size_t rows, size_t cols);
   ~IntMatrix();
-  // IntMatrix(const IntMatrix & rhs); //конструктор копирования
-  // IntMatrix & operator=(const IntMatrix & rhs); //оператор копирующего присваивания
-  // IntMatrix (IntMatrix && rhs);
-  // IntMatrix & operator=(IntMatrix && rhs);
   void command2(std::istream& in);
   void command3(std::istream& in);
 };
@@ -150,10 +146,6 @@ IntMatrix::~IntMatrix() {
   delete[] matrix;
 }
 
-//создать матрицу в которой на rows элементов больше чем в исходной матрице
-//перенести туда все элементы пропустив нужный столбец
-//в тот столбец занести необходимые элементы
-
 void remove (int ** m, size_t rows)
 {
 	for (size_t i=0; i < rows; ++i) {
@@ -173,8 +165,8 @@ void IntMatrix::command2 (std::istream& in) {
   if (colNum > cols) {
     throw std::invalid_argument("Wrong column");
   }
+  size_t ii = 0;
   try {
-    size_t ii = 0;
     tmp = new int * [rows];
     for (; ii < rows; ++ii) {
       tmp[ii] = new int[cols + 1];
@@ -191,13 +183,74 @@ void IntMatrix::command2 (std::istream& in) {
     for (size_t i = 0; i < rows; ++i) {
         delete[] matrix[i].a;       
         matrix[i].a = tmp[i];        
-        matrix[i].k = cols + 1;
+        matrix[i].size = cols + 1;
     }
     delete[] tmp;
     ++cols;
   }
   catch (std::bad_alloc&) {
     remove (tmp, ii);
+    throw std::runtime_error("Not enough memory");
+  }
+}
+
+void IntMatrix::command3(std::istream& in) {
+  size_t rowNum = 0;
+  size_t colNum = 0;
+  int** tmp = nullptr;
+  
+  in >> rowNum >> colNum;
+  if (in.fail() && !in.eof()) {
+    throw std::invalid_argument("Wrong input");
+  }
+  if (rowNum > rows || colNum > cols) {
+    throw std::invalid_argument("Wrong row or column");
+  }
+  size_t ii = 0;
+  try {
+    tmp = new int*[rows + 1];
+    for (; ii < rows + 1; ++ii) {
+      tmp[ii] = new int[cols + 1];
+    }
+    
+    for (size_t i = 0; i < rows; ++i) {
+      for (size_t j = 0; j < cols; ++j) {
+        if (j < colNum) {
+          tmp[i][j] = matrix[i].get(j);
+        } else {
+          tmp[i][j + 1] = matrix[i].get(j);
+        }
+      }
+      tmp[i][colNum] = 0;  
+    }
+    for (size_t j = 0; j < cols + 1; ++j) {
+      tmp[rows][j] = 0;
+    }
+    if (rowNum < rows) {
+      for (size_t i = rows; i > rowNum; --i) {
+        for (size_t j = 0; j < cols + 1; ++j) {
+          tmp[i][j] = tmp[i - 1][j];
+        }
+      }
+    }
+    for (size_t j = 0; j < cols + 1; ++j) {
+      tmp[rowNum][j] = 0;
+    }
+    for (size_t i = 0; i < rows; ++i) {
+      delete[] matrix[i].a;
+    }
+    delete[] matrix;
+    
+    matrix = new IntArray[rows + 1];
+    for (size_t i = 0; i < rows + 1; ++i) {
+      matrix[i].a = tmp[i];
+      matrix[i].size = cols + 1;
+    }
+    delete[] tmp;
+    rows++;
+    cols++;
+  } catch (std::bad_alloc&) {
+    remove(tmp, ii);
     throw std::runtime_error("Not enough memory");
   }
 }

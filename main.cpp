@@ -74,8 +74,8 @@ int main(int argc, char * argv[])
         std::cerr << "Wrong parametr";
         return 3;
       }
-      for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
+      for (size_t i = 0; i < matrix.rows; ++i) {
+        for (size_t j = 0; j < matrix.cols; ++j) {
           std::cout << matrix.matrix[i].a[j] << " ";
         }
         std::cout << "\n";
@@ -219,6 +219,9 @@ void IntMatrix::command2(std::istream& in) {
     new_matrix = new IntArray[rows + 1];
     for (size_t i = 0; i < rows; ++i) {
       for (size_t j = 0; j < cols + 1; ++j) {
+        if (j == 0) {
+          new_matrix[i].a[j] = elem;
+        }
         new_matrix[i].add(elem);
       }
     }
